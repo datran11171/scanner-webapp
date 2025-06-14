@@ -25,6 +25,8 @@ import numpy as np
 import argparse
 import cv2
 import imutils
+import io
+from PIL import Image
 uploaded_file = st.file_uploader("Choose a JPG or PNG file to be scanned", type=["jpg", "jpeg", "png"])
 if uploaded_file is not None:
     # # To read file as bytes:
@@ -84,5 +86,20 @@ if uploaded_file is not None:
         warped = (warped > T).astype("uint8") * 255
 
         st.image(warped, caption="Scanned", channels="GRAY")
+        scanned_pil = Image.fromarray(warped)
+
+        # Save to a BytesIO buffer
+        buf = io.BytesIO()
+        scanned_pil.save(buf, format="PNG")
+        byte_im = buf.getvalue()
+
+        # Add download button
+        st.download_button(
+            label="📥 Download Scanned Image",
+            data=byte_im,
+            file_name="scanned_document.png",
+            mime="image/png"
+        )
     else:
         st.warning("Could not find document outline. Please try a clearer image.")
+        
