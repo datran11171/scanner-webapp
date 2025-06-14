@@ -2,3 +2,4 @@ streamlit
 numpy
 imutils
 scikit-image
+opencv-python
