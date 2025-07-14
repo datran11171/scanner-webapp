@@ -70,21 +70,6 @@ else:  # Take Photo
 # # Use camera image if available, otherwise use uploaded file
 # current_file = camera_image if camera_image is not None else uploaded_file
 if current_file is not None:
-    # # To read file as bytes:
-    # bytes_data = uploaded_file.getvalue()
-    # st.write(bytes_data)
-
-    # # To convert to a string based IO:
-    # stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-    # st.write(stringio)
-
-    # # To read file as string:
-    # string_data = stringio.read()
-    # st.write(string_data)
-
-    # # Can be used wherever a "file-like" object is accepted:
-    # dataframe = pd.read_csv(uploaded_file)
-    # st.write(dataframe)
     
      # Read image from uploaded file
     file_bytes = np.asarray(bytearray(current_file.read()), dtype=np.uint8)
