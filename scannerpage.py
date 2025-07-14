@@ -47,18 +47,28 @@ Transform your photos into clean, professional scanned documents!
 4. Image enhancement for clarity
 ''')
 
-# File upload with drag and drop
-uploaded_file = st.file_uploader(
-    "📁 Choose an image file to scan",
-    type=["jpg", "jpeg", "png", "bmp", "tiff"],
-    help="Supported formats: JPG, PNG, BMP, TIFF"
+# Input method selection
+input_method = st.radio(
+    "📱 Choose input method:",
+    ["Upload File", "Take Photo"],
+    horizontal=True
 )
 
-# Camera input option
-camera_image = st.camera_input("📸 Or take a photo")
+current_file = None
 
-# Use camera image if available, otherwise use uploaded file
-current_file = camera_image if camera_image is not None else uploaded_file
+if input_method == "Upload File":
+    # File upload with drag and drop
+    current_file = st.file_uploader(
+        "📁 Choose an image file to scan",
+        type=["jpg", "jpeg", "png", "bmp", "tiff"],
+        help="Supported formats: JPG, PNG, BMP, TIFF"
+    )
+else:  # Take Photo
+    # Camera input option
+    current_file = st.camera_input("📸 Take a photo of your document")
+
+# # Use camera image if available, otherwise use uploaded file
+# current_file = camera_image if camera_image is not None else uploaded_file
 if current_file is not None:
     # # To read file as bytes:
     # bytes_data = uploaded_file.getvalue()
