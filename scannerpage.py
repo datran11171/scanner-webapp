@@ -59,7 +59,7 @@ camera_image = st.camera_input("📸 Or take a photo")
 
 # Use camera image if available, otherwise use uploaded file
 current_file = camera_image if camera_image is not None else uploaded_file
-if uploaded_file is not None:
+if current_file is not None:
     # # To read file as bytes:
     # bytes_data = uploaded_file.getvalue()
     # st.write(bytes_data)
@@ -77,7 +77,7 @@ if uploaded_file is not None:
     # st.write(dataframe)
     
      # Read image from uploaded file
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    file_bytes = np.asarray(bytearray(current_file.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
     # Resize and clone
@@ -121,16 +121,32 @@ if uploaded_file is not None:
 
         # Save to a BytesIO buffer
         buf = io.BytesIO()
-        scanned_pil.save(buf, format="PNG")
+        
+        if output_format == "PDF":
+            scanned_pil.save(buf, format="PDF")
+            mime_type = "application/pdf"
+            file_extension = "pdf"
+            
+        elif output_format == "JPEG":
+            scanned_pil.save(buf, format="JPEG", quality=95)
+            mime_type = "image/jpeg"
+            file_extension = "jpg"
+            
+        else:  # PNG
+            scanned_pil.save(buf, format="PNG")
+            mime_type = "image/png"
+            file_extension = "png"
         byte_im = buf.getvalue()
 
         # Add download button
         st.download_button(
-            label="📥 Download Scanned Image",
+            label=f"📥 Download Scanned Document ({output_format})",
             data=byte_im,
-            file_name="scanned_document.png",
-            mime="image/png"
+            file_name=f"scanned_document.{file_extension}",
+            mime="mime_type",
+            use_container_width=True
         )
+        st.info(f"📊 **File Info:** {output_format} format | Size: {len(byte_im)/1000} KB")
     else:
         st.warning("Could not find document outline. Please try a clearer image.")
         
