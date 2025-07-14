@@ -1,33 +1,64 @@
 import streamlit as st
 from PIL import Image
-
-st.header("Photo Scanner", divider="rainbow")
-
-st.markdown('''
-            By Jamie Tran
-            
-            Use this to scan your documents for a clearer view!
-            
-            This program does this by:
-            
-            - Detecting the edges of the document first.
-            - Then finding the contours which utilises simple heuristic by assuming the largest contour with exactly four points is the document to be scanned.
-            - Apply perspective transform to obtain a top-down view of the document.
-            
-            ''')
-
-st.divider()
 import pandas as pd
 from io import StringIO
 from transform import four_point_transform
 from skimage.filters import threshold_local
 import numpy as np
-import argparse
 import cv2
 import imutils
 import io
 from PIL import Image
-uploaded_file = st.file_uploader("Choose a JPG or PNG file to be scanned", type=["jpg", "jpeg", "png"])
+import base64
+
+# Page config
+st.set_page_config(
+    page_title="Document Scanner",
+    page_icon="📄",
+    layout="wide"
+)
+
+st.header("📄 Document Scanner", divider="rainbow")
+
+# Sidebar for settings
+st.sidebar.header("⚙️ Settings")
+
+output_format = st.sidebar.selectbox(
+    "Output Format",
+    ["PNG", "PDF", "JPEG"]
+)
+
+
+st.markdown('''
+**By Jamie Tran**
+
+Transform your photos into clean, professional scanned documents!
+
+**Features:**
+- 🎯 Automatic document detection
+- 📐 Perspective correction
+- 📱 Mobile-friendly interface
+- 💾 Multiple output formats
+
+**How it works:**
+1. Edge detection to find document boundaries
+2. Contour analysis to identify the document outline
+3. Perspective transformation for a top-down view
+4. Image enhancement for clarity
+''')
+
+# File upload with drag and drop
+uploaded_file = st.file_uploader(
+    "📁 Choose an image file to scan",
+    type=["jpg", "jpeg", "png", "bmp", "tiff"],
+    help="Supported formats: JPG, PNG, BMP, TIFF"
+)
+
+# Camera input option
+camera_image = st.camera_input("📸 Or take a photo")
+
+# Use camera image if available, otherwise use uploaded file
+current_file = camera_image if camera_image is not None else uploaded_file
 if uploaded_file is not None:
     # # To read file as bytes:
     # bytes_data = uploaded_file.getvalue()
@@ -103,3 +134,15 @@ if uploaded_file is not None:
     else:
         st.warning("Could not find document outline. Please try a clearer image.")
         
+# Footer with tips
+st.divider()
+with st.expander("💡 Tips for Best Results"):
+    st.markdown("""
+    **Photography Tips:**
+    - Use good, even lighting
+    - Place document on a dark, contrasting background
+    - Ensure all four corners of the document are visible
+    - Hold camera steady and parallel to the document
+    - Avoid shadows and glare
+
+    """)
