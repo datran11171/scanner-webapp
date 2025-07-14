@@ -1,7 +1,5 @@
 import streamlit as st
 from PIL import Image
-import pandas as pd
-from io import StringIO
 from transform import four_point_transform
 from skimage.filters import threshold_local
 import numpy as np
@@ -9,7 +7,6 @@ import cv2
 import imutils
 import io
 from PIL import Image
-import base64
 
 # Page config
 st.set_page_config(
@@ -60,8 +57,8 @@ if input_method == "Upload File":
     # File upload with drag and drop
     current_file = st.file_uploader(
         "📁 Choose an image file to scan",
-        type=["jpg", "jpeg", "png", "bmp", "tiff"],
-        help="Supported formats: JPG, PNG, BMP, TIFF"
+        type=["jpg", "jpeg", "png"],
+        help="Supported formats: JPG, PNG, JPEG"
     )
 else:  # Take Photo
     # Camera input option
@@ -81,23 +78,23 @@ if current_file is not None:
     image = imutils.resize(image, height=500)
 
     # Grayscale, blur, edge detection
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (5, 5), 0)
-    edged = cv2.Canny(gray, 75, 200)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # convert to grayscale
+    gray = cv2.GaussianBlur(gray, (5, 5), 0) # reduce noise
+    edged = cv2.Canny(gray, 75, 200) # find edges
 
     st.image(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), caption="Original (Resized)", channels="RGB")
     st.image(edged, caption="Edge Detection", channels="GRAY")
 
     # Find contours
-    cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    cnts = imutils.grab_contours(cnts)
-    cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
+    cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE) # finds closed shapes
+    cnts = imutils.grab_contours(cnts) # largest contours -> document likely to be largest
+    cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5] 
 
     screenCnt = None
     for c in cnts:
-        peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-        if len(approx) == 4:
+        peri = cv2.arcLength(c, True) # calculate perimeter
+        approx = cv2.approxPolyDP(c, 0.02 * peri, True) # approximate shape
+        if len(approx) == 4: # find 4 sided shape
             screenCnt = approx
             break
 
