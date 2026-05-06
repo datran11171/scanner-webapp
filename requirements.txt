@@ -1,5 +1,6 @@
 streamlit
-numpy
+opencv-python-headless
 imutils
 scikit-image
-opencv-python
+Pillow
+numpy
