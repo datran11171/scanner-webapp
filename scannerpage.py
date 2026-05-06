@@ -15,10 +15,10 @@ st.set_page_config(
     layout="wide"
 )
 
-st.header("📄 Document Scanner", divider="rainbow")
+st.header("Document Scanner", divider="blue")
 
 # Sidebar for settings
-st.sidebar.header("⚙️ Settings")
+st.sidebar.header("Settings")
 
 output_format = st.sidebar.selectbox(
     "Output Format",
@@ -27,21 +27,15 @@ output_format = st.sidebar.selectbox(
 
 
 st.markdown('''
-**By Jamie Tran**
+**Transform document photos into clean, professional scans.**
 
-Transform your photos into clean, professional scanned documents!
-
-**Features:**
-- 🎯 Automatic document detection
-- 📐 Perspective correction
-- 📱 Mobile-friendly interface
-- 💾 Multiple output formats
+This tool detects document edges, corrects perspective, and enhances image clarity automatically.
 
 **How it works:**
-1. Edge detection to find document boundaries
-2. Contour analysis to identify the document outline
-3. Perspective transformation for a top-down view
-4. Image enhancement for clarity
+1. Edge detection identifies document boundaries
+2. Contour analysis locates the document outline
+3. Perspective transformation produces a top-down view
+4. Adaptive thresholding enhances readability
 ''')
 
 # Input method selection
